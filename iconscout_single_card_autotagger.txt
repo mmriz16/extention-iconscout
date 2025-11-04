@@ -1,0 +1,78 @@
+You are an expert Chrome Extension developer.
+Your task is to generate a complete working Chrome Extension that automatically runs a JavaScript automation script on IconScout contributor draft pages.
+
+---
+
+🎯 **Goal**
+When the user visits any URL matching:
+  https://contributor.iconscout.com/icon/draft/*
+the extension should automatically detect when the page is fully loaded (including all cards),
+then execute a tagging automation script similar to the one described below.
+
+---
+
+🌐 **Page Detection**
+The content script should:
+- Listen for URL changes (for SPA navigation).
+- Run only when the current URL matches the pattern `/icon/draft/`.
+- Use a MutationObserver or repeated DOM check to detect when all `.card_8BZOE` elements are visible on the page.
+- Once at least 1 `.card_8BZOE` exists and the suggested tags section `.suggestedTags_bXHhf` has rendered, the automation starts.
+
+---
+
+🧠 **Automation Behavior (1 card at a time)**
+For the first `.card_8BZOE` found:
+1. Extract the title value from `input[name^="title-"]`.
+2. Count the number of current tags (`X/10`).
+3. If suggested tags exist and the “Add all to Tags” button `.addToTag_AT1GT` is visible:
+   - Click the button.
+   - Wait 1.5s.
+4. If no suggested tags:
+   - Insert one keyword from the title into the tag input (`#tags-[id] input[type="text"]`).
+   - Simulate pressing Enter.
+   - Wait 2.5s.
+   - Recheck for suggested tags.
+   - If they appear, click “Add all to Tags”.
+   - If still none, retry once more.
+5. After adding, recheck total tags.
+   - If more than 10, remove extra tags until only 10 remain.
+6. Log progress in the console for debugging.
+
+After finishing, log:
+`✅ Finished auto-tagging card [title]`
+
+---
+
+📦 **Extension Structure**
+- `manifest.json`  
+- `content.js`  
+- `background.js` (optional for URL matching)
+- `icons/icon128.png` (placeholder)
+
+**Manifest configuration (v3):**
+- `"matches": ["https://contributor.iconscout.com/icon/draft/*"]`
+- `"run_at": "document_idle"`
+- `"content_scripts": ["content.js"]`
+
+---
+
+⚙️ **content.js Requirements**
+- Use async/await for timing control.
+- Use MutationObserver to detect when `.card_8BZOE` exists.
+- Once found, call the main automation function `autoTagSingleCard()`.
+- Prevent running multiple times if page reloads partially (use a flag `window.iconScoutAutoTagStarted`).
+
+---
+
+📄 **Expected Output**
+Generate all files with complete code:
+
+1. **manifest.json**
+2. **content.js**
+3. **optional background.js** (if needed)
+4. **console logs for every step**
+
+---
+
+✅ **End of prompt.**
+Generate the Chrome Extension project accordingly.

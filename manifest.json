@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "IconScout Single Card AutoTagger",
+  "version": "1.0.0",
+  "description": "Automatically runs tagging automation on IconScout contributor draft pages.",
+  "icons": {
+    "128": "icons/icon128.png"
+  },
+  "host_permissions": [
+    "https://contributor.iconscout.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://contributor.iconscout.com/icon/draft/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
